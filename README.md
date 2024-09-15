@@ -6,6 +6,6 @@ Para instalar dependencias de Next:
 
 $ npm install
 
-Se debe tener instalado Next, NPM y tener las dependencias en el proyecto para correr el proyecto con el comando: 
+Se debe tener instalado Node.js , NPM y tener las dependencias en el proyecto para correr el proyecto con el comando: 
 
 $ npm run dev
