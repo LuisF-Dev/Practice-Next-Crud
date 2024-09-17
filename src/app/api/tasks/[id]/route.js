@@ -7,7 +7,8 @@ export async function GET(request, { params }) {
             id: Number(params.id),
         },
     });
-
+    prisma.tasks.findFirst("");
+    fetch("", {});
     return NextResponse.json([{ "recibiendo tarea": params.id }, { task }]);
 }
 
@@ -29,10 +30,14 @@ export async function PUT(request, { params }) {
 }
 
 export async function DELETE(request, { params }) {
-    const task = await prisma.tasks.delete({
-        where: {
-            id: Number(params.id),
-        },
-    });
-    return NextResponse.json([{ "eliminando tarea": params.id }, { task }]);
+    try {
+        const task = await prisma.tasks.delete({
+            where: {
+                id: Number(params.id),
+            },
+        });
+        return NextResponse.json([{ "eliminando tarea": params.id }, { task }]);
+    } catch (error) {
+        return NextResponse.json(error.meta.cause);
+    }
 }
