@@ -58,6 +58,7 @@ function CreateTasks() {
                     className="mb-auto w-full  border border-gray-800 h-full text-black p-2"
                     placeholder="Descripcion"
                 ></textarea>
+                <label htmlFor="categoria">Categoria</label>
                 <select
                     name="categoria"
                     id="categoryId"
