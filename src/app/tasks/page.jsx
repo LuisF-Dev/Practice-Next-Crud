@@ -1,18 +1,23 @@
 "use client";
 
 import clsx from "clsx";
-import next from "next";
 
 import { useState, useEffect, Suspense } from "react";
 import { poppins } from "../fonts";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
+
+import { useRouter } from "next/navigation";
+import Categories from "../components/Category";
+import Task from "../components/Task";
 
 function TasksPage() {
-    const [categoryId, setCategoryId] = useState(null);
+    const [categoryActive, setCategoryActive] = useState(null);
     const [tasks, SetTasks] = useState([]);
     const [categories, setCategories] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
     const [reload, setReload] = useState(0);
+
+    const router = useRouter();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -27,14 +32,12 @@ function TasksPage() {
         fetchData();
     }, [reload]);
     useEffect(() => {
-        if (isLoaded && !categoryId) {
-            setCategoryId(categories[0].id);
-            console.log(categoryId);
+        if (isLoaded && !categoryActive) {
+            setCategoryActive(categories[0].id);
         }
-        console.log(categoryId);
-    }, [categories, isLoaded, categoryId]);
+    }, [categories, isLoaded, categoryActive]);
     const filteredTasks = tasks.filter(
-        (task) => task.category_id == categoryId
+        (task) => task.category_id == categoryActive
     );
 
     return (
@@ -54,10 +57,19 @@ function TasksPage() {
                     </div>
                     <div className="flex  justify-end w-full px-4">
                         <button
-                            className="bg-slate-800 p-4 rounded-md col-span-1"
+                            className="bg-slate-800 rounded-md p-5 me-3"
+                            onClick={() => {
+                                router.push("tasks/new");
+                            }}
+                        >
+                            Crear
+                        </button>
+                        <div className="p-2"></div>
+                        <button
+                            className="bg-slate-800 rounded-md p-5"
                             onClick={() => setReload(reload + 1)}
                         >
-                            recargar
+                            Recargar
                         </button>
                     </div>
                 </div>
@@ -71,23 +83,14 @@ function TasksPage() {
                         <AnimatePresence>
                             {categories.map((category) => {
                                 return (
-                                    <motion.div
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{ duration: 0.5 }}
-                                        exit={{ opacity: 0 }}
-                                        className={`cursor-pointer ${
-                                            category.id == categoryId
-                                                ? "bg-cyan-600"
-                                                : "bg-cyan-700"
-                                        } rounded-md p-4 bgc m-2 transition`}
-                                        key={category.id}
+                                    <Categories
+                                        category={category}
+                                        categoryActive={categoryActive}
                                         onClick={() =>
-                                            setCategoryId(category.id)
+                                            setCategoryActive(category.id)
                                         }
-                                    >
-                                        {category.name}
-                                    </motion.div>
+                                        key={category.id}
+                                    />
                                 );
                             })}
                         </AnimatePresence>
@@ -125,24 +128,11 @@ function TasksPage() {
                         {isLoaded ? (
                             filteredTasks.map((task) => {
                                 return (
-                                    <motion.div
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{ duration: 0.5 }}
+                                    <Task
+                                        setReload={() => setReload()}
                                         key={task.id}
-                                        className="bg-cyan-700 m-3 p-3 rounded-md transition "
-                                    >
-                                        <div className="bg-cyan-600 rounded-md m-1 p-2">
-                                            Titulo: <h2>{task.title}</h2>
-                                        </div>
-                                        <div className="bg-cyan-600 rounded-md m-1 p-2">
-                                            Descripcion:{" "}
-                                            <p>{task.description}</p>
-                                        </div>
-                                        <button className="bg-teal-600 rounded-md m-2 p-2">
-                                            Editar
-                                        </button>
-                                    </motion.div>
+                                        task={task}
+                                    />
                                 );
                             })
                         ) : (

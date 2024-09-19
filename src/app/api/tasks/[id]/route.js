@@ -14,17 +14,11 @@ export async function GET(request, { params }) {
 
 export async function PUT(request, { params }) {
     const data = await request.json();
-    const { title, description, done, categoryId } = data;
     const task = await prisma.tasks.update({
         where: {
             id: Number(params.id),
         },
-        data: {
-            title: title,
-            description: description,
-            done: done,
-            category_id: categoryId,
-        },
+        data: data,
     });
     return NextResponse.json([{ "modificando tarea": params.id }, { task }]);
 }
